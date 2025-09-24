@@ -18,3 +18,4 @@ void Modificar_alumno(TAlumnos *cabecera);
 void Eliminar_alumno(TAlumnos **cabecera);
 void Eliminar_asistencia(TAlumnos **cabecera);
 void Cargar_lista(TAlumnos **alumnos);
+void Ordenar_alumnos(TAlumnos **cabecera);
