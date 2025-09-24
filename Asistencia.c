@@ -39,9 +39,9 @@ int main()
     TAlumnos * alumnos_lista = NULL;
     Cargar_lista(&alumnos_lista);
 
-    while (opcion != 7)
+    while (opcion != 8)
     {
-        printf("Selecciona la opcion a realizar:\n1: Crear lista de asistencia\n2: Tomar asistencia\n3: Imprimir lista de asistencia\n4: Modificar alumno\n5: Eliminar alumno\n6: Eliminar de asistencia\n7: Salir\n");
+        printf("Selecciona la opcion a realizar:\n1: Crear lista de asistencia\n2: Tomar asistencia\n3: Imprimir lista de asistencia\n4: Modificar alumno\n5: Eliminar alumno\n6: Eliminar de asistencia\n7: Ordenar Alumnos\n8:Salir");
         if( !(scanf("%d", &opcion))) //Instruccion hecha con copilot
         {
             printf("Entrada invalida. Por favor ingrese un numero.\n");
@@ -105,11 +105,19 @@ int main()
                 Eliminar_asistencia(&alumnos_lista);
                 break;
             case 7:
-                printf("Saliendo del programa.\n");
-                exit(1);
+                
+                Ordenar_alumnos_apellido(&alumnos);
+                printf("\n\tLista ordenada por apellido correctamente.");
+                
+            break;
+
+            case 8:
+                printf("Saliendo del Programa");      
+            break;
+            
             default:
                 printf("Opcion invalida, intente de nuevo.\n");
-                break;
+            break;
         }
     }
 }
@@ -309,4 +317,79 @@ void Eliminar_asistencia(TAlumnos **cabecera)
     *cabecera = NULL; 
     printf("Toda la lista de asistencia ha sido eliminada.\n");
     printf("\n");
+}
+
+void Ordenar_alumnos_apellido(TAlumnos **cabecera) {
+    
+    int intercambiado;
+    TAlumnos *ptr;
+    TAlumnos *ultimo = NULL;
+    char apellido1[30], apellido2[30];
+    char *esp1, *esp2;
+    int tempAsistio, tempClave, longitud;
+    char tempNombre[30];
+    
+    if (*cabecera == NULL || (*cabecera)->sig == NULL) {
+        
+        return;
+        
+    }
+
+    do {
+        
+        intercambiado = 0;
+        ptr = *cabecera;
+
+        while (ptr->sig != ultimo) {
+            
+            esp1 = strchr(ptr->nombre, ' ');
+            
+            if (esp1 != NULL) {
+                
+                longitud = esp1 - ptr->nombre;
+                strncpy(apellido1, ptr->nombre, longitud);
+                apellido1[longitud] = '\0';
+                
+            } else {
+                
+                strcpy(apellido1, ptr->nombre);
+                
+            }
+
+            esp2 = strchr(ptr->sig->nombre, ' ');
+            
+            if (esp2 != NULL) {
+                
+                longitud = esp2 - ptr->sig->nombre;
+                strncpy(apellido2, ptr->sig->nombre, longitud);
+                apellido2[longitud] = '\0';
+            } else {
+                strcpy(apellido2, ptr->sig->nombre);
+            }
+
+            if (strcasecmp(apellido1, apellido2) > 0) {
+                
+                tempAsistio = ptr->asistio;
+                tempClave = ptr->clave;
+                strcpy(tempNombre, ptr->nombre);
+
+                ptr->asistio = ptr->sig->asistio;
+                ptr->clave = ptr->sig->clave;
+                strcpy(ptr->nombre, ptr->sig->nombre);
+
+                ptr->sig->asistio = tempAsistio;
+                ptr->sig->clave = tempClave;
+                strcpy(ptr->sig->nombre, tempNombre);
+
+                intercambiado = 1;
+            }
+            
+            ptr = ptr->sig;
+            
+        }
+        
+        ultimo = ptr;
+        
+    } while (intercambiado);
+    
 }
